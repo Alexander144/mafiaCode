@@ -5,6 +5,34 @@ const routerBase = process.env.DEPLOY_ENV === 'GH_PAGES' ? {
 } : {}
 
 module.exports = {
+  modules: [
+    [
+      'nuxt-fire',
+      {
+        useOnly: ['auth','firestore','functions','storage','realtimeDb', 'messaging'],
+        customEnv: false,
+        functionsLocation: 'us-central1',
+        config: {
+          development: {
+            apiKey: 'AIzaSyAD_7EqNLrea9oq5T108tmthIm0vr4dMdA',
+            authDomain: 'mafia-b689f.firebaseapp.com',
+            databaseURL: 'https://mafia-b689f.firebaseio.com',
+            projectId: 'mafia-b689f',
+            storageBucket: 'mafia-b689f.appspot.com',
+            messagingSenderId: '99869499662'
+          },
+          production: {
+            apiKey: 'AIzaSyAD_7EqNLrea9oq5T108tmthIm0vr4dMdA',
+            authDomain: 'mafia-b689f.firebaseapp.com',
+            databaseURL: 'https://mafia-b689f.firebaseio.com',
+            projectId: 'mafia-b689f',
+            storageBucket: 'mafia-b689f.appspot.com',
+            messagingSenderId: '99869499662'
+          }
+        }
+      }
+    ]
+  ],
   /*
   ** Headers of the page
   */

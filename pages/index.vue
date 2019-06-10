@@ -1,33 +1,62 @@
 <template>
   <section class="container">
     <div>
-      <app-logo/>
       <h1 class="title">
-        mafia
       </h1>
-      <h2 class="subtitle">
-        Nuxt.js project
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green">Documentation</a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey">GitHub</a>
-      </div>
+      <input v-model="userInput" />
+     <button @click="createUser">Create user</button>
     </div>
   </section>
 </template>
 
 <script>
-import AppLogo from '~/components/AppLogo.vue'
 
 export default {
+  created(){
+    this.$fireStore.collection('users').onSnapshot(res => {
+      const changes = res.docChanges();
+      changes.forEach(change => {
+        if(change.type === 'added' ){
+          this.users.push(change.doc.id)
+        }
+      });
+    })
+  },
+  mounted(){
+    if(localStorage.name){
+      this.$router.replace({ path: 'user' });
+    }
+  },
+  data(){
+    return{
+      users: [],
+      userInput: '',
+    }
+  },
   components: {
-    AppLogo
+  },
+  methods:{
+    async createUser(){
+      if(!this.users.includes(this.userInput)){
+       const messageRef = this.$fireStore.collection('users').doc(this.userInput)
+        try {
+          await messageRef.set({
+            dead: false,
+            position: "Human"
+          })
+        } catch (e) {
+        alert(e)
+        return
+        }
+        alert('Success.');
+        localStorage.name = this.userInput;
+        this.$router.replace({ path: 'user' });
+      }
+      else{
+        alert("User is already taken");
+      }
+    },
+
   }
 }
 </script>
@@ -39,27 +68,6 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
-}
-
-.title {
-  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* 1 */
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
 }
 </style>
 
